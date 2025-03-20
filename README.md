@@ -56,6 +56,46 @@ Step 7: When writer pod recreated, reader pod is still able to see the file
 
 <img width="446" alt="image" src="https://github.com/user-attachments/assets/e380e628-6e3a-4805-9269-bb1234e32d62" />
 
+## Scenario 2
+
+Step 1: Create PV
+
+<img width="263" alt="image" src="https://github.com/user-attachments/assets/468f2aec-85fc-40a2-8b59-bfbec3f54091" />
+
+Step 2: Create PVC
+
+<img width="288" alt="image" src="https://github.com/user-attachments/assets/bd03ea6c-95ea-4ea4-84d9-bbbf487e1999" />
+
+Step 3: Create writer pod using the above PVC
+
+<img width="748" alt="image" src="https://github.com/user-attachments/assets/1c311f19-dd99-4044-af6b-1e8f818ef797" />
+
+Step 4: Create Splunk Otel collector pod
+
+<img width="677" alt="image" src="https://github.com/user-attachments/assets/ef7f19d6-acf5-429c-9626-ef52c5a7994a" />
+
+![image](https://github.com/user-attachments/assets/cbecd46b-bdd4-4f07-a3bd-363ec833e940)
+
+Step 5: In Splunk Enterprise, logs are indexed
+
+<img width="631" alt="image" src="https://github.com/user-attachments/assets/0471354e-3a8d-46e8-a5f6-861d498549c4" />
+
+Step 6: Delete the writer pod
+
+<img width="530" alt="image" src="https://github.com/user-attachments/assets/a7169c09-1648-4cab-9535-56363465d61b" />
+
+Step 7: Recreate the writer pod with different log to differentiate
+
+<img width="796" alt="image" src="https://github.com/user-attachments/assets/3963f0b5-2d24-4040-b692-c7b4d9a1425b" />
+
+Step 8: Read the logs in the mount path. Reflecting the new logs
+
+<img width="806" alt="image" src="https://github.com/user-attachments/assets/98388cc1-57dd-498a-91de-06f3c0663333" />
+
+Step 9: Also seeing the new logs in the Splunk enterprise security
+
+<img width="813" alt="image" src="https://github.com/user-attachments/assets/c1eb6ffb-8c29-4b54-afd7-95c1798553d5" />
+
 
 
 
