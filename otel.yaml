@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splunk-otel-collector
+  labels:
+    app: splunk-otel-collector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: splunk-otel-collector
+  template:
+    metadata:
+      labels:
+        app: splunk-otel-collector
+    spec:
+      containers:
+        - name: splunk-otel-collector
+          image: quay.io/signalfx/splunk-otel-collector:latest
+          args: ["--config=/etc/otel-collector-config.yaml"]
+          volumeMounts:
+            - name: otel-config
+              mountPath: /etc/otel-collector-config.yaml
+              subPath: otel-collector-config.yaml
+            - name: log-mount
+              mountPath: /var/log/app
+          env:
+            - name: SPLUNK_HEC_TOKEN
+              value: "xxxx"  # Replace with your Splunk HEC token
+            - name: SPLUNK_HEC_ENDPOINT
+              value: "http://xxxx:8088/services/collector/event"  # Update with Splunk HEC endpoint
+      volumes:
+        - name: otel-config
+          configMap:
+            name: splunk-otel-collector-config
+        - name: log-mount
+          hostPath:
+            path: /mnt/data  # Update with the actual log directory on the host
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: splunk-otel-collector-config
+data:
+  otel-collector-config.yaml: |
+    receivers:
+      filelog:
+        include: ["/var/log/app/*.log"]  # Directory to read logs from
+        start_at: end
+
+    processors:
+      batch: {}
+
+    exporters:
+      splunk_hec:
+        token: "${SPLUNK_HEC_TOKEN}"  # Use the HEC token from environment variable
+        endpoint: "${SPLUNK_HEC_ENDPOINT}"  # Use the HEC endpoint from environment variable
+        source: "otel-collector"
+        sourcetype: "_json"
+        index: "main"  # Set to the desired Splunk index
+
+    service:
+      pipelines:
+        logs:
+          receivers: [filelog]
+          processors: [batch]
+          exporters: [splunk_hec]

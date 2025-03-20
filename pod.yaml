@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: writer-pod
+spec:
+  containers:
+    - name: writer-container
+      image: busybox
+      command: ["/bin/sh", "-c", "echo 'Hello from Writer Pod which is up later than collector' > /mnt/data/hello.txt && sleep 3600"]
+      volumeMounts:
+        - name: shared-storage
+          mountPath: /mnt/data
+  volumes:
+    - name: shared-storage
+      persistentVolumeClaim:
+        claimName: my-pvc 
